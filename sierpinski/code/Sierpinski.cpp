@@ -2,6 +2,7 @@
 using namespace sf;
 #include <iostream>
 #include <vector>
+#include <sstream>
 using namespace std;
 
 int main()
@@ -12,20 +13,69 @@ int main()
 	// Create and open a window for the game
 
 	RenderWindow window(vm, "Sierpinski Triangle!!", Style::Default);
-	RectangleShape rect(Vector2f{20,10});
+	CircleShape vert(1);
 
 	vector<Vector2f> vertices;   ///push_back stuff into us!
 	vector<Vector2f> points;
 
 	Vector2f clicked;
 
-    while (window.isOpen())
+	float midpoint_x, midpoint_y;
+
+	//set the prompt
+	Text prompt;
+	Text prompt2;
+	Text prompt3;
+	Font font;
+	font.loadFromFile("fonts/TitilliumWeb-Regular.ttf");
+	if (!font.loadFromFile("fonts/TitilliumWeb-Regular.ttf"))
+	{
+		// error
+	}
+	prompt.setFont(font);
+	prompt.setString("Click 3 vertices of a triangle");
+	prompt.setCharacterSize(30);
+	prompt.setFillColor(Color::White);
+
+	prompt2.setFont(font);
+	prompt2.setString("Click a random point to begin");
+	prompt2.setCharacterSize(25);
+	prompt2.setFillColor(Color::White);
+
+	prompt3.setFont(font);
+	prompt3.setString("Click to reveal new points...");
+	prompt3.setCharacterSize(20);
+	prompt3.setFillColor(Color::Red);
+
+	//position the prompt
+	FloatRect textRect = prompt.getLocalBounds();
+	prompt.setOrigin(textRect.left +
+		textRect.width / 2.0f,
+		textRect.top + textRect.height / 2.0f);
+	prompt.setPosition(1920 / 2.0f, 1080 / 20.0f);
+	
+	FloatRect textRect2 = prompt2.getLocalBounds();
+	prompt2.setOrigin(textRect.left +
+		textRect.width / 2.0f,
+		textRect.top + textRect.height / 2.0f);
+	prompt2.setPosition(1920 / 2.0f + 20.0f, 1080 / 11.0f);
+
+	FloatRect textRect3 = prompt3.getLocalBounds();
+	prompt3.setOrigin(textRect.left +
+		textRect.width / 2.0f,
+		textRect.top + textRect.height / 2.0f);
+	prompt3.setPosition(1920 / 2.0f + 55.0f, 1080 / 8.0f);
+
+
+	while (window.isOpen())
 	{
 		/*
 		****************************************
 		Handle the players input
 		****************************************
 		*/
+		
+
 		Event event;
 		while (window.pollEvent(event))
 		{
@@ -43,37 +93,65 @@ int main()
 
 					clicked.x = event.mouseButton.x;
 					clicked.y = event.mouseButton.y;
+
+					if (vertices.size() < 3)
+					{
+						vertices.push_back(Vector2f(clicked.x, clicked.y));
+						//cout << "vertices: " << vertices[vertices.size() - 1].x << " " << vertices[vertices.size() - 1].y << endl;
+					}
+					else if (points.size() == 0)
+					{
+						points.push_back(Vector2f(clicked.x, clicked.y));
+						//cout << "points: " << points[points.size() - 1].x << " " << points[points.size() - 1].y << endl;
+					}
+					else
+					{
+						int randVertex = (rand() % 3);
+						midpoint_x = ((vertices[randVertex].x + points[points.size() - 1].x) / 2);
+						midpoint_y = ((vertices[randVertex].y + points[points.size() - 1].y) / 2);
+						points.push_back(Vector2f(midpoint_x, midpoint_y));
+						//cout << "points.size " << points.size() << endl;
+						//cout << "vertex chosen : " << vertices[randVertex].x << " " << vertices[randVertex].y << endl;
+						//cout << "points: " << points[points.size() - 1].x << " " << points[points.size() - 1].y << endl;
+					}
 				}
 			}
-    
-		}
 
-        if (Keyboard::isKeyPressed(Keyboard::Escape))
+		}
+					
+		if (Keyboard::isKeyPressed(Keyboard::Escape))
 		{
 			window.close();
+		}	
+		
+		window.clear();
+		
+		// Draw our game scene here
+		for (int i = 0; i < vertices.size(); i++)
+		{
+			vert.setPosition(vertices[i].x, vertices[i].y);
+			window.draw(vert);
+		}
+		for (int i = 0; i < points.size(); i++)
+		{
+			vert.setPosition(points[i].x, points[i].y);
+			window.draw(vert);
+		}		
+
+		window.draw(prompt);
+		
+		if (vertices.size() == 3 && points.size() >= 0)
+		{
+			window.draw(prompt2);
 		}
 
-		/*
-		****************************************
-		Update the scene
-		****************************************
-		*/
-		rect.setPosition(clicked.x, clicked.y);
-		rect.setFillColor(Color::Blue);
-		/*
-		****************************************
-		Draw the scene
-		****************************************
-		*/
+		if (vertices.size() == 3 && points.size() >= 1)
+		{
+			window.draw(prompt3);
+		}
 
-		///loop through vectors and draw each coordinate
-		// Clear everything from the last run frame
-		window.clear();
-		// Draw our game scene here
-		window.draw(rect);
 		window.display();
-
-
+		
     }
     return 0;
 }
