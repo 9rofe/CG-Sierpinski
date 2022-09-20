@@ -66,6 +66,7 @@ int main()
 		textRect.top + textRect.height / 2.0f);
 	prompt3.setPosition(1920 / 2.0f + 55.0f, 1080 / 8.0f);
 
+	int lastVertex;
 
 	while (window.isOpen())
 	{
@@ -94,7 +95,8 @@ int main()
 					clicked.x = event.mouseButton.x;
 					clicked.y = event.mouseButton.y;
 
-					if (vertices.size() < 3)
+					if (vertices.size() < 3) 
+					//if (vertices.size() < 4)
 					{
 						vertices.push_back(Vector2f(clicked.x, clicked.y));
 						//cout << "vertices: " << vertices[vertices.size() - 1].x << " " << vertices[vertices.size() - 1].y << endl;
@@ -106,6 +108,7 @@ int main()
 					}
 					else
 					{
+				
 						int randVertex = (rand() % 3);
 						midpoint_x = ((vertices[randVertex].x + points[points.size() - 1].x) / 2);
 						midpoint_y = ((vertices[randVertex].y + points[points.size() - 1].y) / 2);
@@ -113,6 +116,17 @@ int main()
 						//cout << "points.size " << points.size() << endl;
 						//cout << "vertex chosen : " << vertices[randVertex].x << " " << vertices[randVertex].y << endl;
 						//cout << "points: " << points[points.size() - 1].x << " " << points[points.size() - 1].y << endl;
+						
+						/*
+						int randVertex = (rand() % 4);
+						if (randVertex != lastVertex)
+						{
+							lastVertex = randVertex;
+							midpoint_x = ((vertices[randVertex].x + points[points.size() - 1].x) / 2);
+							midpoint_y = ((vertices[randVertex].y + points[points.size() - 1].y) / 2);
+							points.push_back(Vector2f(midpoint_x, midpoint_y));
+						}
+						*/					
 					}
 				}
 			}
