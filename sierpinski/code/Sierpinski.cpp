@@ -70,13 +70,6 @@ int main()
 
 	while (window.isOpen())
 	{
-		/*
-		****************************************
-		Handle the players input
-		****************************************
-		*/
-		
-
 		Event event;
 		while (window.pollEvent(event))
 		{
@@ -95,7 +88,9 @@ int main()
 					clicked.x = event.mouseButton.x;
 					clicked.y = event.mouseButton.y;
 
+					//triangle:
 					if (vertices.size() < 3) 
+					//square:
 					//if (vertices.size() < 4)
 					{
 						vertices.push_back(Vector2f(clicked.x, clicked.y));
@@ -106,9 +101,12 @@ int main()
 						points.push_back(Vector2f(clicked.x, clicked.y));
 						//cout << "points: " << points[points.size() - 1].x << " " << points[points.size() - 1].y << endl;
 					}
+
+					//ONE DOT PER CLICK:
+					/*
 					else
 					{
-				
+						//triangle:
 						int randVertex = (rand() % 3);
 						midpoint_x = ((vertices[randVertex].x + points[points.size() - 1].x) / 2);
 						midpoint_y = ((vertices[randVertex].y + points[points.size() - 1].y) / 2);
@@ -116,8 +114,8 @@ int main()
 						//cout << "points.size " << points.size() << endl;
 						//cout << "vertex chosen : " << vertices[randVertex].x << " " << vertices[randVertex].y << endl;
 						//cout << "points: " << points[points.size() - 1].x << " " << points[points.size() - 1].y << endl;
-						
-						/*
+
+						//square:
 						int randVertex = (rand() % 4);
 						if (randVertex != lastVertex)
 						{
@@ -125,9 +123,9 @@ int main()
 							midpoint_x = ((vertices[randVertex].x + points[points.size() - 1].x) / 2);
 							midpoint_y = ((vertices[randVertex].y + points[points.size() - 1].y) / 2);
 							points.push_back(Vector2f(midpoint_x, midpoint_y));
-						}
-						*/					
+						}			
 					}
+					*/
 				}
 			}
 
@@ -146,12 +144,44 @@ int main()
 			vert.setPosition(vertices[i].x, vertices[i].y);
 			window.draw(vert);
 		}
+		
 		for (int i = 0; i < points.size(); i++)
 		{
 			vert.setPosition(points[i].x, points[i].y);
 			window.draw(vert);
-		}		
+		}
 
+		//quick draw
+		
+		int count = 0;
+		
+		while(points.size() > 0 && count < 100)
+		{
+			//triangle:
+			
+			int randVertex = (rand() % 3);
+			midpoint_x = ((vertices[randVertex].x + points[points.size() - 1].x) / 2);
+			midpoint_y = ((vertices[randVertex].y + points[points.size() - 1].y) / 2);
+			points.push_back(Vector2f(midpoint_x, midpoint_y));
+			vert.setPosition(points[count].x, points[count].y);
+			
+
+			//square:
+			/*
+			int randVertex = (rand() % 4);
+			if (randVertex != lastVertex)
+			{
+				lastVertex = randVertex;
+				midpoint_x = ((vertices[randVertex].x + points[points.size() - 1].x) / 2);
+				midpoint_y = ((vertices[randVertex].y + points[points.size() - 1].y) / 2);
+				points.push_back(Vector2f(midpoint_x, midpoint_y));
+			}
+			*/
+			window.draw(vert);
+			count++;
+		}
+		
+		
 		window.draw(prompt);
 		
 		if (vertices.size() == 3 && points.size() >= 0)
